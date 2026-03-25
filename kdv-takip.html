@@ -49,11 +49,65 @@ aside{width:234px;flex-shrink:0;background:#fff;border-right:1px solid var(--bor
 .nav-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--bg);flex-shrink:0;transition:background .15s;}
 .nav-item.active .nav-icon{background:rgba(37,99,235,.1);}
 
+/* BOTTOM NAV - Mobile */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);z-index:300;padding:6px 0 10px;}
+.bottom-nav-inner{display:flex;justify-content:space-around;}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 10px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:600;transition:all .15s;min-width:56px;}
+.bnav-item.active{color:var(--blue);}
+.bnav-icon{font-size:22px;line-height:1;}
+
 /* MAIN */
 main{flex:1;padding:28px 32px;overflow-x:hidden;}
 .page-header{margin-bottom:22px;}
 .page-title{font-size:23px;font-weight:800;letter-spacing:-0.5px;}
 .page-sub{color:var(--muted);font-size:13px;margin-top:3px;}
+
+/* MOBILE */
+@media(max-width:768px){
+  header{padding:0 14px;height:54px;}
+  .logo-text{font-size:15px;}
+  .header-badge{display:none;}
+  #syncStatus{display:none;}
+  aside{display:none;}
+  .bottom-nav{display:block;}
+  .app{flex-direction:column;}
+  main{padding:14px 12px 84px;}
+  .page-title{font-size:18px;}
+  .page-sub{font-size:11.5px;}
+  .month-bar{gap:3px;padding:4px;margin-bottom:14px;}
+  .month-btn{padding:5px 9px;font-size:11px;}
+  .summary-grid{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .scard{padding:13px 13px 11px;}
+  .scard-value{font-size:16px;}
+  .scard-label{font-size:10px;}
+  .scard-sub{font-size:10px;}
+  .scard-icon{width:30px;height:30px;font-size:14px;}
+  .scard-top{margin-bottom:10px;}
+  .panel-grid{grid-template-columns:1fr;gap:12px;}
+  .form-body{padding:12px;}
+  .form-row{grid-template-columns:1fr 1fr;gap:8px;}
+  .form-group input,.form-group select{padding:8px 10px;font-size:13px;}
+  .btn-add{padding:10px;}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{font-size:11.5px;min-width:400px;}
+  th{padding:8px 10px;font-size:9px;}
+  td{padding:8px 10px;}
+  .result-rows{padding:0 12px;}
+  .result-box-head{padding:14px 14px;}
+  .result-box-title{font-size:14px;}
+  .result-row{font-size:12px;padding:10px 0;}
+  .result-row.total .result-val{font-size:15px;}
+  .result-label{font-size:12px;gap:6px;}
+  .alert-box{padding:10px 12px;font-size:12px;}
+  .chart-wrap{padding:12px;}
+  .bar-label-name{font-size:11px;}
+  .bar-label-val{font-size:10px;}
+  .devir-info{padding:10px 12px;font-size:11.5px;}
+  #toast{bottom:78px;right:10px;left:10px;text-align:center;font-size:12px;}
+  .panel-head{padding:11px 14px;}
+  .panel-title{font-size:12.5px;}
+  .year-select{font-size:12px;padding:5px 24px 5px 8px;}
+}
 
 /* MONTH BAR */
 .month-bar{display:flex;gap:5px;margin-bottom:22px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:5px;box-shadow:var(--shadow);}
@@ -369,6 +423,28 @@ tbody tr:hover td{background:var(--bg);}
 
 <div id="toast"></div>
 
+<!-- MOBILE BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bnav-item active" id="bnav-dashboard" onclick="goPage('dashboard')">
+      <div class="bnav-icon">📊</div>
+      <span>Özet</span>
+    </div>
+    <div class="bnav-item" id="bnav-kesilen" onclick="goPage('kesilen')">
+      <div class="bnav-icon">🧾</div>
+      <span>Kesilen</span>
+    </div>
+    <div class="bnav-item" id="bnav-gider" onclick="goPage('gider')">
+      <div class="bnav-icon">🛒</div>
+      <span>Gider</span>
+    </div>
+    <div class="bnav-item" id="bnav-hesap" onclick="goPage('hesap')">
+      <div class="bnav-icon">🧮</div>
+      <span>Hesap</span>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── SUPABASE CONFIG ────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://sudpfmyjiprvyuygpbyz.supabase.co';
@@ -460,9 +536,12 @@ async function loadData() {
 function goPage(p) {
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(x => x.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
   const map = {dashboard:0, kesilen:1, gider:2, hesap:3};
   document.querySelectorAll('.nav-item')[map[p]].classList.add('active');
+  const bnav = document.getElementById('bnav-' + p);
+  if (bnav) bnav.classList.add('active');
   renderAll();
 }
 
